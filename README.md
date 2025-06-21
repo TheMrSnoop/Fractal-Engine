@@ -1,5 +1,5 @@
 # Fractal Engine
-My attempt at a custom made, game engine, created with C++. 
+My attempt at a custom made game engine.
 Created in C++ to force myself to learn it, at least to an intermediate level.
 
 ![alt text](https://github.com/TheMrSnoop/Fractal-Engine/blob/main/Images/Fractal%20Engine%20Icon.png)
