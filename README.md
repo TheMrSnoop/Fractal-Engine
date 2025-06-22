@@ -6,6 +6,7 @@ Created in C++ to force myself to learn it, at least to an intermediate level.
 
 # Planned Features
 * Uh, 3D rendering
+* Has the ability to render a spinning wireframe cube.
 * Textures? Maybe?
 * Basic Lighting? If I dont give up by then
 * Ray Tracing...never happening.
