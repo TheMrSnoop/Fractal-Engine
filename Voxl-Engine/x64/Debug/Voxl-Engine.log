@@ -1,2 +1,35 @@
 ﻿  Main.cpp
-  Voxl-Engine.vcxproj -> C:\dev\Voxl-Engine\x64\Debug\Voxl-Engine.exe
+C:\dev\Voxl-Engine\Main.cpp(1,9): warning C4005: 'IMGUI_IMPL_OPENGL_LOADER_GLAD': macro redefinition
+      C:\dev\Voxl-Engine\Main.cpp(1,9):
+      'IMGUI_IMPL_OPENGL_LOADER_GLAD' previously declared on the command line
+  
+C:\dev\Voxl-Engine\Main.cpp(279,62): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Voxl-Engine\Main.cpp(280,67): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Voxl-Engine\Main.cpp(350,19): error C2665: 'Block::Block': no overloaded function could convert all the argument types
+      C:\dev\Voxl-Engine\Block.h(14,2):
+      could be 'Block::Block(Block::BlockType,Texture,float,glm::vec3,GLuint,int,Shader)'
+          C:\dev\Voxl-Engine\Main.cpp(350,19):
+          'Block::Block(Block::BlockType,Texture,float,glm::vec3,GLuint,int,Shader)': cannot convert argument 2 from 'Texture *' to 'Texture'
+              C:\dev\Voxl-Engine\Main.cpp(350,40):
+              'Texture::Texture': no overloaded function could convert all the argument types
+                  C:\dev\Voxl-Engine\texture.h(20,1):
+                  could be 'Texture::Texture(Texture &&)'
+                      C:\dev\Voxl-Engine\Main.cpp(350,40):
+                      'Texture::Texture(Texture &&)': cannot convert argument 1 from 'Texture *' to 'Texture &&'
+                          C:\dev\Voxl-Engine\Main.cpp(350,40):
+                          Reason: cannot convert from 'Texture *' to 'Texture'
+                          C:\dev\Voxl-Engine\Main.cpp(350,40):
+                          Conversion requires a second user-defined-conversion operator or constructor
+                  C:\dev\Voxl-Engine\texture.h(20,1):
+                  or       'Texture::Texture(const Texture &)'
+                      C:\dev\Voxl-Engine\Main.cpp(350,40):
+                      'Texture::Texture(const Texture &)': cannot convert argument 1 from 'Texture *' to 'const Texture &'
+                          C:\dev\Voxl-Engine\Main.cpp(350,40):
+                          Reason: cannot convert from 'Texture *' to 'const Texture'
+                          C:\dev\Voxl-Engine\Main.cpp(350,40):
+                          Conversion requires a second user-defined-conversion operator or constructor
+                  C:\dev\Voxl-Engine\Main.cpp(350,40):
+                  while trying to match the argument list '(Texture *)'
+      C:\dev\Voxl-Engine\Main.cpp(350,19):
+      while trying to match the argument list '(Block::BlockType, Texture *, float, glm::vec3, GLuint, int, Shader)'
+  
