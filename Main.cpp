@@ -222,6 +222,11 @@ int main()
 	Texture Darkstone("C:/dev/Voxl-Engine/Images/BlockTextures/Darkstone.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
 	Texture MossyDarkstone("C:/dev/Voxl-Engine/Images/BlockTextures/MossyDarkstone.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
 
+	Texture StoneBrick("C:/dev/Voxl-Engine/Images/BlockTextures/StoneBrick.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture MossyStoneBrick("C:/dev/Voxl-Engine/Images/BlockTextures/MossyStoneBrick.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture CrackedStoneBrick("C:/dev/Voxl-Engine/Images/BlockTextures/CrackedStoneBrick.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+
+
 	Texture Stone("C:/dev/Voxl-Engine/Images/BlockTextures/Stone.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
 
 	Texture IronOre("C:/dev/Voxl-Engine/Images/BlockTextures/IronOre.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
@@ -243,7 +248,7 @@ int main()
 
 	//Assigns the texture objects to an array
 	//With the current debug system I have in place, the order of this array defines the order of the blocks when they spawn.
-	Texture textures[] = { Grass, Dirt, Log, Leaves, DarkPlanks, Glass, MossyDarkstone, Darkstone, Stone, IronOre, DiamondOre, EmeraldOre, CoalOre, RubyOre, OpalOre, Sand, Water, Obsidian, Lava };
+	Texture textures[] = { Grass, Dirt, Log, Leaves, DarkPlanks, Glass, StoneBrick, MossyStoneBrick, CrackedStoneBrick, MossyDarkstone, Darkstone, Stone, IronOre, DiamondOre, EmeraldOre, CoalOre, RubyOre, OpalOre, Sand, Water, Obsidian, Lava };
 
 	int TextureLength = sizeof(textures) / sizeof(textures[0]);
 
@@ -330,7 +335,7 @@ int main()
 		//Builds a manual set of blocks
 		for (int i = 0; i < TextureLength; i++)
 		{
-			Block newBlock(Block::Natural, textures[i], 1.0f, glm::vec3((i * 1.0f), 0.0f, 0.0f), EBO1.ID, indexCount, shaderProgram);
+			Block newBlock(Block::Natural, textures[i], 1.0f, glm::vec3((i * 1.0f), 0.0f, 0.0f), shaderProgram);
 		}
 
 
@@ -346,8 +351,11 @@ int main()
 				//Defines where the tree will be placed
 				glm::vec3 worldPos = (glm::vec3(0, 0, 0) + offset) + glm::vec3(0, 0, 5);
 
-				//Likely caused by part.textureRef
-				Block newBlock(Block::Natural, part.textureRef, 1.0f, worldPos, EBO1.ID, indexCount, shaderProgram);
+				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::translate(model, worldPos);
+				shaderProgram.setMat4("model", model);
+
+				glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 			}
 		}
 

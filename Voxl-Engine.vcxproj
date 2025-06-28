@@ -158,6 +158,7 @@
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
+    <ClCompile Include="WorldStructure.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Tree.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
+    <ClInclude Include="WorldStructure.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Users\thoma\Downloads\grass.jpg" />

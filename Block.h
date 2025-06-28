@@ -11,6 +11,6 @@ public:
 		Crafted
 	};
 
-	Block(BlockType type, Texture blockTexture, float blockDurability, glm::vec3 position, GLuint indices, int indexCount, Shader shaderProgram);
+	Block(BlockType type, Texture blockTexture, float blockDurability, glm::vec3 position, Shader shaderProgram);
 
 };

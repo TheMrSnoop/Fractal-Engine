@@ -18,7 +18,7 @@ Tree::Tree(const std::string& TreeDisplayName, Texture* LogTexture, Texture* Lea
 			{0.0f, 3.0f, 0.0f}
 		};
 
-		std::vector<glm::vec3> OakLeafPosistions =
+		std::vector<glm::vec3> OakLeafPositions =
 		{
 			//Center blocks
 			{0.0f, 4.0f, 0.0f},
@@ -108,7 +108,7 @@ Tree::Tree(const std::string& TreeDisplayName, Texture* LogTexture, Texture* Lea
 		// leaves
 		TreePart leaves;
 		leaves.textureRef = LeafTexture;
-		leaves.relativePos = OakLeafPosistions;
+		leaves.relativePos = OakLeafPositions;
 		parts.push_back(leaves);
 	}
 	else if (TreeDisplayName == "Oak_Large")
