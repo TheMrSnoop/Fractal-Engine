@@ -1,4 +1,10 @@
-﻿  Block.cpp
-  WorldStructure.cpp
-  Generating Code...
+﻿  Main.cpp
+C:\dev\Voxl-Engine\Main.cpp(1,9): warning C4005: 'IMGUI_IMPL_OPENGL_LOADER_GLAD': macro redefinition
+      C:\dev\Voxl-Engine\Main.cpp(1,9):
+      'IMGUI_IMPL_OPENGL_LOADER_GLAD' previously declared on the command line
+  
+C:\dev\Voxl-Engine\Main.cpp(246,26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\dev\Voxl-Engine\Main.cpp(247,29): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\dev\Voxl-Engine\Main.cpp(289,62): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Voxl-Engine\Main.cpp(290,67): warning C4305: 'argument': truncation from 'double' to 'float'
   Voxl-Engine.vcxproj -> C:\dev\Voxl-Engine\x64\Debug\Voxl-Engine.exe

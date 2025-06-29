@@ -25,10 +25,15 @@
 #include"DeltaTime.h"
 #include"Tree.h"
 #include"Block.h"
+#include"WorldStructure.h"
 
 
 int width = 1920;
 int height = 1080;
+
+
+//technicallllly, its better to include this varriable in Camera.h, and slightly remake the logic in Camera.cpp, then to store it here.
+float FOV = 70.0f;
 
 
 
@@ -161,6 +166,11 @@ int main()
 
 	glViewport(0, 0, width, height);
 
+	//Initalizes all the block textures AFTER gladLoadGL()
+	Block::InitTextures();
+
+
+
 
 	//Renders the background color, then applys it to the next frame.
 
@@ -172,10 +182,22 @@ int main()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glfwSwapBuffers(window);
 
+	glDisable(GL_DEPTH_TEST);
+
+	glDepthMask(GL_FALSE);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+
+	glEnable(GL_TEXTURE_2D);
+
 
 	//Loads icon image file
 	int iconWidth, iconHeight;
 	int iconChannels;
+
 	unsigned char* iconPixels = stbi_load("C:/dev/Voxl-Engine/Images/VoxlCube.png", &iconWidth, &iconHeight, &iconChannels, 4);
 
 
@@ -206,65 +228,48 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
-
-
-	//Texture
-
-	//Creates the texture object
-	Texture Grass("C:/dev/Voxl-Engine/Images/BlockTextures/Grass.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture Dirt("C:/dev/Voxl-Engine/Images/BlockTextures/Dirt.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture Log("C:/dev/Voxl-Engine/Images/BlockTextures/Log.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture Leaves("C:/dev/Voxl-Engine/Images/BlockTextures/Leaves.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-
-	Texture DarkPlanks("C:/dev/Voxl-Engine/Images/BlockTextures/DarkPlanks.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture Glass("C:/dev/Voxl-Engine/Images/BlockTextures/Glass.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-
-	Texture Darkstone("C:/dev/Voxl-Engine/Images/BlockTextures/Darkstone.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture MossyDarkstone("C:/dev/Voxl-Engine/Images/BlockTextures/MossyDarkstone.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-
-	Texture StoneBrick("C:/dev/Voxl-Engine/Images/BlockTextures/StoneBrick.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture MossyStoneBrick("C:/dev/Voxl-Engine/Images/BlockTextures/MossyStoneBrick.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture CrackedStoneBrick("C:/dev/Voxl-Engine/Images/BlockTextures/CrackedStoneBrick.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-
-
-	Texture Stone("C:/dev/Voxl-Engine/Images/BlockTextures/Stone.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-
-	Texture IronOre("C:/dev/Voxl-Engine/Images/BlockTextures/IronOre.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture DiamondOre("C:/dev/Voxl-Engine/Images/BlockTextures/DiamondOre.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture GoldOre("C:/dev/Voxl-Engine/Images/BlockTextures/GoldOre.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture EmeraldOre("C:/dev/Voxl-Engine/Images/BlockTextures/EmeraldOre.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture CoalOre("C:/dev/Voxl-Engine/Images/BlockTextures/CoalOre.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture RubyOre("C:/dev/Voxl-Engine/Images/BlockTextures/RubyOre.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture OpalOre("C:/dev/Voxl-Engine/Images/BlockTextures/OpalOre.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-
-
-
-	Texture Obsidian("C:/dev/Voxl-Engine/Images/BlockTextures/Obsidian.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture Sand("C:/dev/Voxl-Engine/Images/BlockTextures/Sand.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	Texture Lava("C:/dev/Voxl-Engine/Images/BlockTextures/Lava.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-
-	Texture Water("C:/dev/Voxl-Engine/Images/BlockTextures/Water.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	//brick.texUnit(shaderProgram, "tex0", 0);
-
-	//Assigns the texture objects to an array
-	//With the current debug system I have in place, the order of this array defines the order of the blocks when they spawn.
-	Texture textures[] = { Grass, Dirt, Log, Leaves, DarkPlanks, Glass, StoneBrick, MossyStoneBrick, CrackedStoneBrick, MossyDarkstone, Darkstone, Stone, IronOre, DiamondOre, EmeraldOre, CoalOre, RubyOre, OpalOre, Sand, Water, Obsidian, Lava };
-
-	int TextureLength = sizeof(textures) / sizeof(textures[0]);
-
-
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+
+	//Gets a reference to the Block Database
+	auto allBlocks = Block::blockDatabase;
+
+	std::vector<glm::vec3> allPlacedBlocksPos;
+
+	//Gets a reference to all the Block Textures
+	auto allBlockTextures = Block::allBlockTextures;
+
+	//Gets both of the array lengths
+	int blockDataBaseLength = allBlocks.size();
+	int blockTextureBaseLength = allBlocks.size();
 
 
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 	DeltaTime deltatime(0.5f);
 
+	//Trees
+	Tree OakTree(std::string("Oak"), Block::ReturnBlock("Log"), Block::ReturnBlock("Leaves"));
+	Tree LargeOakTree(std::string("Oak_Large"), Block::ReturnBlock("Log"), Block::ReturnBlock("Leaves"));
+	Tree FallenLog(std::string("Fallen_Log"), Block::ReturnBlock("Log"), Block::ReturnBlock("Leaves"));
+	Tree Rock(std::string("Stone_Rock"), Block::ReturnBlock("Stone"), Block::ReturnBlock("Leaves"));
 
-	Tree OakTree(std::string("Oak"), &Log, &Leaves);
-	Tree LargeOakTree(std::string("Oak_Large"), &Log, &Leaves);
-	Tree FallenLog(std::string("Fallen_Log"), &Log, &Leaves);
-	Tree Rock(std::string("Stone_Rock"), &Stone, &Leaves);
+
+	WorldStructure Ruins(std::string("Ruins"), 
+	{
+		Block::ReturnBlock("Darkstone"),
+		Block::ReturnBlock("Mossy Darkstone"),
+		Block::ReturnBlock("Stone Brick"),
+		Block::ReturnBlock("Mossy Stone Brick"),
+		Block::ReturnBlock("Cracked Stone Brick")
+	});
+
+
+
+	//WorldStructure Ruins(std::string("Ruins"), &Stone, &Leaves);
 
 	//Calls for checking for the scroll value
 	activeCamera = &camera;
@@ -276,7 +281,7 @@ int main()
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplGlfw_InitForOpenGL(window, true); 
 	ImGui_ImplOpenGL3_Init("#version 330");
 
 
@@ -287,10 +292,14 @@ int main()
 	DevMenuStyle.WindowBorderSize = 0.0f;
 
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_TEXTURE_2D);
 
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
 	
+	//Block::TotalBlockCount = 0;
+
 	//Main program while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -309,7 +318,7 @@ int main()
 		ImGui::Begin("Developer Menu", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 		ImGui::Text("FPS: %.2f", deltatime.FPS);
 		ImGui::Text("Delta Time: %.10fs", deltatime.DTPS);
-		ImGui::Text("Block Count %i", TextureLength);
+		//ImGui::Text("Block Count %i", Block::TotalBlockCount);
 		ImGui::Text("Camera Speed %.1f", camera.speed);
 		ImGui::Text("Camera Position %.1f, %.1f, %.1f", camera.Position.x, camera.Position.y, camera.Position.z);
 		ImGui::End();
@@ -323,8 +332,7 @@ int main()
 		camera.Inputs(window);
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
-		camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix", width, height);
-
+		camera.Matrix(FOV, 0.1f, 100.0f, shaderProgram, "camMatrix", width, height);
 
 
 		VAO1.Bind();
@@ -333,82 +341,43 @@ int main()
 		
 
 		//Builds a manual set of blocks
-		for (int i = 0; i < TextureLength; i++)
+		for (int i = 0; i < blockDataBaseLength; i++)
 		{
-			Block newBlock(Block::Natural, textures[i], 1.0f, glm::vec3((i * 1.0f), 0.0f, 0.0f), shaderProgram);
+			Block::SpawnBlock(allBlocks[i].DisplayName, glm::vec3((i * 1.0f), 0.0f, 0.0f), shaderProgram);
 		}
 
+		//Spawns the 2 trees
+		Tree::SpawnTree(glm::vec3(0.0f, 0.0f, 5.0f), OakTree, shaderProgram);
+		Tree::SpawnTree(glm::vec3(0.0f, 0.0f, 10.0f), LargeOakTree, shaderProgram);
 
+		//Spawns the 2 foliage
+		Tree::SpawnTree(glm::vec3(5.0f, 0.0f, 5.0f), FallenLog, shaderProgram);
+		Tree::SpawnTree(glm::vec3(5.0f, 0.0f, 10.0f), Rock, shaderProgram);
 
+		//Spawns the Ruin Structure
+		WorldStructure::SpawnStructure(glm::vec3(15.0f, 0.0f, 10.0f), Ruins, shaderProgram);
 
-		//Cycles through both the log and leaf parts to build the tree.
-		// (Since the trunk is defined first, it builds the trunk, then the leaves)
-		for (auto& part : OakTree.parts)
+		//Spawns the stone floor
+		Block::SpawnSquareofBlocks("Stone", glm::vec3(15.0f, 0.0f, 10.0f), glm::vec2(-3.0f, 4.0f), glm::vec2(-3.0f, 4.0f), shaderProgram);
+
+		// ! WARNING !, this is a temporary solution, and murders the FPS.
+		Block::SpawnSquareofBlocks("Dark Planks", glm::vec3(0.0f, -1.0f, 00.0f), glm::vec2(-25.0f, 25.0f), glm::vec2(-25.0f, 25.0f), shaderProgram);
+
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		{
-			part.textureRef->Bind();
-			for (auto& offset : part.relativePos)
+			allPlacedBlocksPos.push_back(camera.Position);
+		}
+
+		if (allPlacedBlocksPos.empty() == false)
+		{
+			for (int i = 0; i < allPlacedBlocksPos.size(); i++)
 			{
-				//Defines where the tree will be placed
-				glm::vec3 worldPos = (glm::vec3(0, 0, 0) + offset) + glm::vec3(0, 0, 5);
-
-				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, worldPos);
-				shaderProgram.setMat4("model", model);
-
-				glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+				Block::SpawnBlock("Stone", allPlacedBlocksPos[i], shaderProgram);
 			}
 		}
 
-		//Large Oak Tree
-		for (auto& part : LargeOakTree.parts)
-		{
-			part.textureRef->Bind();
-			for (auto& offset : part.relativePos)
-			{
-				//Defines where the tree will be placed
-				glm::vec3 worldPos = (glm::vec3(0, 0, 0) + offset) + glm::vec3(0, 0, 15);
 
 
-				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, worldPos);
-				shaderProgram.setMat4("model", model);
-				glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
-			}
-		}
-
-		//Fallen Log
-		for (auto& part : FallenLog.parts)
-		{
-			part.textureRef->Bind();
-			for (auto& offset : part.relativePos)
-			{
-				//Defines where the tree will be placed
-				glm::vec3 worldPos = (glm::vec3(0, 0, 0) + offset) + glm::vec3(5, 0, 15);
-
-
-				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, worldPos);
-				shaderProgram.setMat4("model", model);
-				glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
-			}
-		}
-
-		//For Rock
-		for (auto& part : Rock.parts)
-		{
-			part.textureRef->Bind();
-			for (auto& offset : part.relativePos)
-			{
-				//Defines where the tree will be placed
-				glm::vec3 worldPos = (glm::vec3(0, 0, 0) + offset) + glm::vec3(5, 0, 5);
-
-
-				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, worldPos);
-				shaderProgram.setMat4("model", model);
-				glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
-			}
-		}
 
 
 		glfwSwapBuffers(window);
@@ -424,12 +393,12 @@ int main()
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
-	//brick.Delete();
 	shaderProgram.Delete();
 
-	for (int i = 0; i < 5; i++)
+	//Deletes all the block textures
+	for (int i = 0; i < blockTextureBaseLength; i++)
 	{
-		textures[i].Delete();
+		allBlockTextures[i].Delete();
 	}
 
 	glfwDestroyWindow(window);

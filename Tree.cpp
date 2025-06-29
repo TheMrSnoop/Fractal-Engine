@@ -5,20 +5,47 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 
+#include<iostream>
 
-Tree::Tree(const std::string& TreeDisplayName, Texture* LogTexture, Texture* LeafTexture)
+
+void Tree::SpawnTree(glm::vec3 TreePosition, Tree treeObject, Shader shaderProgram)
+{
+	//Cycles through both the log and leaf parts to build the tree.
+	// (Since the trunk is defined first, it builds the trunk, then the leaves)
+
+
+
+	for (int p = 0; p < treeObject.parts.size(); p++)
+	{
+		for (auto& offset : treeObject.parts[p].relativePos)
+		{
+			Block::SpawnBlock(treeObject.parts[p].treeBlock.DisplayName, TreePosition + offset, shaderProgram);
+		}
+	}
+}
+
+
+Tree::Tree(const std::string& TreeDisplayName, const Block::BlockData& trunkBlock, const Block::BlockData& leafBlock)
 {
 	if (TreeDisplayName == "Oak")
 	{
-		std::vector<glm::vec3> OakLogPositions =
+		//Trunk
+		TreePart trunkPart;
+		trunkPart.treeBlock = trunkBlock;
+		trunkPart.relativePos =
 		{
 			{0.0f, 0.0f, 0.0f},
 			{0.0f, 1.0f, 0.0f},
 			{0.0f, 2.0f, 0.0f},
 			{0.0f, 3.0f, 0.0f}
 		};
+		this->parts.push_back(trunkPart);
 
-		std::vector<glm::vec3> OakLeafPositions =
+
+		//Leaf
+		TreePart leafPart;
+		leafPart.treeBlock = leafBlock;
+		leafPart.relativePos =
 		{
 			//Center blocks
 			{0.0f, 4.0f, 0.0f},
@@ -98,22 +125,15 @@ Tree::Tree(const std::string& TreeDisplayName, Texture* LogTexture, Texture* Lea
 		};
 
 
+		this->parts.push_back(leafPart);
 
-		// trunk
-		TreePart trunk;
-		trunk.textureRef = LogTexture;
-		trunk.relativePos = OakLogPositions;
-		parts.push_back(trunk);
-
-		// leaves
-		TreePart leaves;
-		leaves.textureRef = LeafTexture;
-		leaves.relativePos = OakLeafPositions;
-		parts.push_back(leaves);
 	}
 	else if (TreeDisplayName == "Oak_Large")
 	{
-		std::vector<glm::vec3> OakLogPositions =
+		//Trunk
+		TreePart trunkPart;
+		trunkPart.treeBlock = trunkBlock;
+		trunkPart.relativePos =
 		{
 			//Trunk
 			{0.0f, 0.0f, 0.0f},
@@ -130,8 +150,12 @@ Tree::Tree(const std::string& TreeDisplayName, Texture* LogTexture, Texture* Lea
 			{2.0f, 4.0f, 0.0f},
 			{2.0f, 5.0f, 0.0f},
 		};
+		this->parts.push_back(trunkPart);
 
-		std::vector<glm::vec3> OakLeafPosistions =
+		//Leaf
+		TreePart leafPart;
+		leafPart.treeBlock = leafBlock;
+		leafPart.relativePos =
 		{
 			//Center blocks
 			{0.0f, 8.0f, 0.0f},
@@ -243,22 +267,15 @@ Tree::Tree(const std::string& TreeDisplayName, Texture* LogTexture, Texture* Lea
 
 		};
 
+		this->parts.push_back(leafPart);
 
-		// trunk
-		TreePart trunk;
-		trunk.textureRef = LogTexture;
-		trunk.relativePos = OakLogPositions;
-		parts.push_back(trunk);
-
-		// leaves
-		TreePart leaves;
-		leaves.textureRef = LeafTexture;
-		leaves.relativePos = OakLeafPosistions;
-		parts.push_back(leaves);
 	}
 	else if(TreeDisplayName == "Fallen_Log")
 	{
-		std::vector<glm::vec3> FallenLogPositions =
+		//Trunk
+		TreePart trunkPart;
+		trunkPart.treeBlock = trunkBlock;
+		trunkPart.relativePos =
 		{
 			//Trunk
 			{1.0f, 0.0f, 0.0f},
@@ -267,15 +284,14 @@ Tree::Tree(const std::string& TreeDisplayName, Texture* LogTexture, Texture* Lea
 			{4.0f, 0.0f, 0.0f},
 			{5.0f, 0.0f, 0.0f}
 		};
-
-		TreePart trunk;
-		trunk.textureRef = LogTexture;
-		trunk.relativePos = FallenLogPositions;
-		parts.push_back(trunk);
+		this->parts.push_back(trunkPart);
 	}
 	else if (TreeDisplayName == "Stone_Rock")
 	{
-		std::vector<glm::vec3> StonePositions =
+		//Trunk
+		TreePart trunkPart;
+		trunkPart.treeBlock = trunkBlock;
+		trunkPart.relativePos =
 		{
 			//Rock Body
 			{0.0f, 0.0f, 0.0f},
@@ -287,11 +303,7 @@ Tree::Tree(const std::string& TreeDisplayName, Texture* LogTexture, Texture* Lea
 			{0.0f, 1.0f, 0.0f},
 			{0.0f, 1.0f, 1.0f}
 		};
-
-		TreePart trunk;
-		trunk.textureRef = LogTexture;
-		trunk.relativePos = StonePositions;
-		parts.push_back(trunk);
+		this->parts.push_back(trunkPart);
 	}
 		
 }
