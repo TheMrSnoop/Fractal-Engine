@@ -134,5 +134,15 @@ WorldStructure::WorldStructure(std::string StructureID, std::vector<Block::Block
 			{-2.0f, 3.0f, -2.0f},
 		};
 		this->StructureParts.push_back(CrackedBrickWalls);
+
+
+		StructurePart Chest;
+		Chest.block = blocks[5];
+		Chest.relativePos =
+		{
+			//Walls
+			{0.0f, 1.0f, 0.0f},
+		};
+		this->StructureParts.push_back(Chest);
 	}
 }

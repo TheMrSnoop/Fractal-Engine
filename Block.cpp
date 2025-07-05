@@ -129,12 +129,16 @@ void Block::InitTextures()
 //Display Name | Block Type | Path to Texture | Durrability (can be used if I want to add gameplay)
 std::vector<Block::BlockData> Block::blockDatabase =
 {
+	{"Grass Top", Block::Natural, "C:/dev/Voxl-Engine/Images/BlockTextures/GrassTop.jpg", 5.0f},
 	{"Grass", Block::Natural, "C:/dev/Voxl-Engine/Images/BlockTextures/Grass.jpg", 5.0f},
 	{"Dirt", Block::Natural, "C:/dev/Voxl-Engine/Images/BlockTextures/Dirt.jpg", 5.0f},
 	{"Log", Block::Natural, "C:/dev/Voxl-Engine/Images/BlockTextures/Log.jpg", 10.0f},
+	{"Pine Log", Block::Natural, "C:/dev/Voxl-Engine/Images/BlockTextures/PineLog.jpg", 10.0f},
 	{"Leaves", Block::Natural, "C:/dev/Voxl-Engine/Images/BlockTextures/Leaves.png", 2.5f},
+	{"Pine Leaves", Block::Natural, "C:/dev/Voxl-Engine/Images/BlockTextures/PineLeaves.png", 2.5f},
 
 	{"Dark Planks", Block::Crafted, "C:/dev/Voxl-Engine/Images/BlockTextures/DarkPlanks.jpg", 10.0f},
+	{"Chest", Block::Crafted, "C:/dev/Voxl-Engine/Images/BlockTextures/Chest.jpg", 10.0f},
 	{"Glass", Block::Crafted, "C:/dev/Voxl-Engine/Images/BlockTextures/Glass.png", 10.0f},
 	{"Darkstone", Block::Crafted, "C:/dev/Voxl-Engine/Images/BlockTextures/Darkstone.jpg", 15.0f},
 	{"Mossy Darkstone", Block::Natural, "C:/dev/Voxl-Engine/Images/BlockTextures/MossyDarkstone.jpg", 15.0f},
@@ -190,6 +194,7 @@ void Block::SpawnBlock(std::string BlockDataID, glm::vec3 position, Shader shade
 {
 	//Block::TotalBlockCount += 1;
 
+	//Ensures that the block "snaps" to a grid
 	glm::vec3 roundedPosition = glm::vec3(round(position.x) * 1.0f, round(position.y) * 1.0f, round(position.z) * 1.0f);
 
 

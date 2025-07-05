@@ -11,6 +11,8 @@
 #include <vector>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 #include<stb/stb_image.h>
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
@@ -65,8 +67,48 @@ int main()
 	//GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Voxl Engine", monitor, NULL);
 
 
-	
+	//CODE FOR THE TOP TOOLBAR
 
+	//Creates the top window
+	HWND hwnd = glfwGetWin32Window(window);
+
+	HMENU hMenu = CreateMenu();
+
+
+	//Creates the first dropdown menu, "File"
+	HMENU hFileMenu = CreatePopupMenu();
+	AppendMenu(hFileMenu, MF_STRING, 1, L"Open");
+	AppendMenu(hFileMenu, MF_STRING, 2, L"Save");
+	AppendMenu(hFileMenu, MF_SEPARATOR, 0, NULL);
+	AppendMenu(hFileMenu, MF_STRING, 3, L"Exit");
+
+	//Creates the second dropdown menu, "Edit"
+	HMENU hEditMenu = CreatePopupMenu();
+	AppendMenu(hEditMenu, MF_STRING, 1, L"Project Settings");
+	AppendMenu(hEditMenu, MF_STRING, 2, L"Editor Settings");
+
+	//Creates the third dropdown menu, "View"
+	HMENU hViewMenu = CreatePopupMenu();
+	AppendMenu(hViewMenu, MF_STRING, 1, L"Editor Viewmode");
+
+	//Seperates the dropdown, kinda like a horizontal rule (<hr>)
+	AppendMenu(hViewMenu, MF_SEPARATOR, 0, NULL);
+
+	AppendMenu(hViewMenu, MF_STRING, 2, L"Editor Camera FOV");
+	AppendMenu(hViewMenu, MF_STRING, 3, L"Viewport Resolution");
+
+	AppendMenu(hViewMenu, MF_SEPARATOR, 0, NULL);
+
+	AppendMenu(hViewMenu, MF_STRING, 4, L"Viewport Window");
+	AppendMenu(hViewMenu, MF_STRING, 5, L"File Explorer Windows");
+
+
+	//Adds both of the dropdown menus to the window
+	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, L"File");
+	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hEditMenu, L"Edit");
+	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hViewMenu, L"View");
+
+	SetMenu(hwnd, hMenu);
 
 	//If window failed, create error message
 	if (window == NULL)
@@ -198,6 +240,8 @@ int main()
 	int iconWidth, iconHeight;
 	int iconChannels;
 
+
+	stbi_set_flip_vertically_on_load(false);
 	unsigned char* iconPixels = stbi_load("C:/dev/Voxl-Engine/Images/VoxlCube.png", &iconWidth, &iconHeight, &iconChannels, 4);
 
 
@@ -253,9 +297,13 @@ int main()
 
 	//Trees
 	Tree OakTree(std::string("Oak"), Block::ReturnBlock("Log"), Block::ReturnBlock("Leaves"));
+	Tree PineTree(std::string("Pine"), Block::ReturnBlock("Pine Log"), Block::ReturnBlock("Pine Leaves"));
 	Tree LargeOakTree(std::string("Oak_Large"), Block::ReturnBlock("Log"), Block::ReturnBlock("Leaves"));
 	Tree FallenLog(std::string("Fallen_Log"), Block::ReturnBlock("Log"), Block::ReturnBlock("Leaves"));
 	Tree Rock(std::string("Stone_Rock"), Block::ReturnBlock("Stone"), Block::ReturnBlock("Leaves"));
+
+
+	//Tree::fillOutRandomTreePositions(glm::vec2(-10, 10), glm::vec2(-10, 10), 0.0f, 10);
 
 
 	WorldStructure Ruins(std::string("Ruins"), 
@@ -264,8 +312,11 @@ int main()
 		Block::ReturnBlock("Mossy Darkstone"),
 		Block::ReturnBlock("Stone Brick"),
 		Block::ReturnBlock("Mossy Stone Brick"),
-		Block::ReturnBlock("Cracked Stone Brick")
+		Block::ReturnBlock("Cracked Stone Brick"),
+		Block::ReturnBlock("Chest")
 	});
+
+
 
 
 
@@ -326,6 +377,11 @@ int main()
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+
+
+
+
+
 		//Tells OpenGL which shader program to use
 		shaderProgram.Activate();
 
@@ -343,12 +399,13 @@ int main()
 		//Builds a manual set of blocks
 		for (int i = 0; i < blockDataBaseLength; i++)
 		{
-			Block::SpawnBlock(allBlocks[i].DisplayName, glm::vec3((i * 1.0f), 0.0f, 0.0f), shaderProgram);
+			Block::SpawnBlock(allBlocks[i].DisplayName, glm::vec3(((i * 1.0f) - (blockDataBaseLength / 2)), 0.0f, -20.0f), shaderProgram);
 		}
 
 		//Spawns the 2 trees
 		Tree::SpawnTree(glm::vec3(0.0f, 0.0f, 5.0f), OakTree, shaderProgram);
-		Tree::SpawnTree(glm::vec3(0.0f, 0.0f, 10.0f), LargeOakTree, shaderProgram);
+		Tree::SpawnTree(glm::vec3(0.0f, 0.0f, 12.0f), LargeOakTree, shaderProgram);
+		Tree::SpawnTree(glm::vec3(0.0f, 0.0f, 19.0f), PineTree, shaderProgram);
 
 		//Spawns the 2 foliage
 		Tree::SpawnTree(glm::vec3(5.0f, 0.0f, 5.0f), FallenLog, shaderProgram);
@@ -361,13 +418,24 @@ int main()
 		Block::SpawnSquareofBlocks("Stone", glm::vec3(15.0f, 0.0f, 10.0f), glm::vec2(-3.0f, 4.0f), glm::vec2(-3.0f, 4.0f), shaderProgram);
 
 		// ! WARNING !, this is a temporary solution, and murders the FPS.
-		Block::SpawnSquareofBlocks("Dark Planks", glm::vec3(0.0f, -1.0f, 00.0f), glm::vec2(-25.0f, 25.0f), glm::vec2(-25.0f, 25.0f), shaderProgram);
+		Block::SpawnSquareofBlocks("Grass Top", glm::vec3(0.0f, -1.0f, 00.0f), glm::vec2(-25.0f, 25.0f), glm::vec2(-25.0f, 25.0f), shaderProgram);
 
+
+		//for (int i = 0; i < Tree::allTreePositions.size(); i++)
+		//{
+			//Tree::SpawnTree(Tree::allTreePositions[i], OakTree, shaderProgram);
+		//}
+
+
+
+
+		//Spawns a block on the camera's current position
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		{
 			allPlacedBlocksPos.push_back(camera.Position);
 		}
 
+		//Re-renders all the placed blocks, if they are any
 		if (allPlacedBlocksPos.empty() == false)
 		{
 			for (int i = 0; i < allPlacedBlocksPos.size(); i++)
